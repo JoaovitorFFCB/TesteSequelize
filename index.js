@@ -1,11 +1,42 @@
-(async () => {
 
+(async () => {
+    
+    const TarefasAlunos = require('./models/TarefasAlunos');
     const database = require ('./db');
     const Alunos = require('./models/Alunos');
     const Professores = require('./models/Professores');
     const Tarefas = require('./models/Tarefas');
     await database.sync(); //{force: true} dentro do sync na primeira vez que for usar
 
+
+    /*const buscarAluno = await Alunos.findByPk(1)
+    const buscarTarefa = await Tarefas.findAndCountAll()
+    let num = buscarTarefa.count
+    
+    //await buscarAluno.setTarefas([addTarefas])
+
+    let i = 1
+    while (i <= 2) {
+        let addTarefas = await Tarefas.findOne({
+            where: {
+                id: i,
+                serie: 1
+            }
+        })
+       await buscarAluno.setTarefas([addTarefas])
+        /*if (addTarefas.serie === buscarAluno.serie) {
+            console.log(addTarefas.titulo);
+            //await buscarAluno.setTarefas([Tarefas])
+            return
+        }
+        i++
+    }*/
+    
+    /*for (let i = 1; i == num; i++) {
+        
+        //await buscarAluno.setTarefas([addTarefas])
+    }*/
+    
 
     /*const aluno = await Alunos.findAndCountAll({
         where: {
@@ -14,27 +45,27 @@
     })
     console.log(aluno.count);*/
 
-    const tarefa = await Tarefas.findByPk(1)
-    console.log(tarefa.serie);
+    /*const tarefa = await Tarefas.findByPk(1)
+    console.log(tarefa.serie);*/
 
 
     // Operações CRUD = Create
 
     /*const novoProfessor = await Professores.create({
-        nome: 'Marcos',
-        sobrenome: 'Silva',
+        nome: 'Luan',
+        sobrenome: 'Peixoto',
         celular: 99999,
-        disciplina: 'Matematica',
+        disciplina: 'Fisica',
         email: 'desousadelima.joao@gmail.com',
         senha: '123'
     })
-    console.log(novoProfessor);*/
+    console.log(novoProfessor.dataValues);*/
 
     /*const novoAluno = await Alunos.create({
-        nome: 'Julia',
-        sobrenome: 'Lima',
+        nome: 'Marianna',
+        sobrenome: 'Assis',
         celular: 99999,
-        serie: 1,
+        serie: 2,
         email: 'desousadelima@gmail.com',
         senha: '123'
     })
@@ -43,13 +74,44 @@
     /*const buscarProf = await Professores.findByPk(2)
 
     const novaTarefa = await Tarefas.create({
-        titulo: 'Numeros compostos',
+        titulo: 'Eletromagnetismo',
         serie: 1,
-        disciplina: 'Matematica',
+        disciplina: 'Fisica',
         descricao: 'Exercicios do livro',
         ProfessoreId: buscarProf.id
     })
     console.log(novaTarefa);*/
+
+    const tamanho = await Tarefas.findAndCountAll()
+    let num = tamanho.count
+
+    for (let i = 1; i <= num; i++) {
+        const buscarAluno = await Alunos.findByPk(1)
+        
+        let buscarTarefa = await Tarefas.findOne({
+            where: {
+                id: i
+            }
+        })
+        if (buscarTarefa.serie === buscarAluno.serie) {
+            let addTarefas = await TarefasAlunos.create({
+                AlunoId: buscarAluno.id,
+                TarefaId: buscarTarefa.id
+            })
+            
+            console.log(addTarefas)
+        }
+
+    }
+
+
+    /*const produto = await TarefasAlunos.findByPk(1)
+    
+    
+    produto.AlunoId = 1
+
+    await produto.save()
+    console.log(produto);*/
 
 
 
@@ -76,9 +138,9 @@
     })
 
     const produto = await Produto.findByPk(1)
-    await produto.setCategoria([novaCategoria])*/
+    await produto.setCategoria([novaCategoria])
 
-    /*const cat = await Categoria.findOne({
+    const cat = await Categoria.findOne({
         where: {
             nome: 'Informatica'
         }
@@ -147,6 +209,14 @@
         include: Fabricante
     })
     console.log(produto.fabricante.nome);*/
+
+    const aluno = await Alunos.findByPk(1, {
+        include: Tarefas
+    })
+
+    const alunosTarefa = aluno.Tarefas.map((result) => result.dataValues)
+
+    console.log(alunosTarefa);
 
     /*const fabricante = await Fabricante.findByPk(1)
     const produtos = await fabricante.getProdutos()
